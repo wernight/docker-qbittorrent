@@ -1,21 +1,27 @@
-# QBittorrent Docker Image
+qBittorrent Docker Image
+========================
 
-[Docker](https://www.docker.com/) image for [QBittorrent](http://www.qbittorrent.org/).
+[Docker](https://www.docker.com/) image for [qBittorrent](http://www.qbittorrent.org/).
 
-Run using this command
+Fix create some directories as user 520 (`qbittorrent`):
 
-	docker run -itd \
+    $ mkdir config torrents downloads
+    $ chown 520 config torrents downloads
+
+Run using this command:
+
+	$ docker run -d \
 		-p 8080:8080 \
-		-v /data/qbittorrent/config:/root/.config/qBittorrent \
-		-v /data/qbittorrent/torrents:/root/.local/share/data/qBittorrent \
-		-v /data/qbittorrent/downloads:/root/Downloads \
-		sohrab/qbittorrent
+		-v /data/qbittorrent/config:/config \
+		-v /data/qbittorrent/torrents:/torrents \
+		-v /data/qbittorrent/downloads:/downloads \
+		wernight/qbittorrent
 
-To have webUI running on [http://localhost:8080](http://localhost:8080) (username: admin, password: adminadmin) with config in the following locations mounted:
+To have webUI running on [http://localhost:8080](http://localhost:8080) (username: `admin`, password: `adminadmin`) with config in the following locations mounted:
 
-* `/data/qbittorrent/config`: QBittorrent configuration files
-* `/data/qbittorrent/torrents`: Torrent files
-* `/data/qbittorrent/downloads`: Download location
+  * `/config`: qBittorrent configuration files
+  * `/torrents`: Torrent files
+  * `/downloads`: Download location
 
 It is probably a good idea to add `--restart=always` so the container restarts if it goes down.
 

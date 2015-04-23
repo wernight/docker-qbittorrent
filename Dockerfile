@@ -1,19 +1,29 @@
 FROM debian:wheezy
-MAINTAINER sohrab <sohrab.hosseini@gmail.com>
+
+MAINTAINER Werner Beroux <werner@beroux.com>
 
 RUN apt-get update && \
     apt-get install -y qbittorrent-nox && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY qBittorrent.conf /build/qBittorrent.conf
+RUN useradd --system --uid 520 -m --shell /usr/sbin/nologin qbittorrent
 
-VOLUME /root/.config/qBittorrent
-VOLUME /root/.local/share/data/qBittorrent
-VOLUME /root/Downloads
+# Default configuration file.
+ADD qBittorrent.conf /default/qBittorrent.conf
+ADD start.sh /
+
+# Create symbolic links to simplify mounting
+RUN ln -s /home/qbittorrent/.config/qBittorrent /config
+RUN ln -s /home/qbittorrent/.local/share/data/qBittorrent /torrents
+RUN mkdir /downloads && chown qbittorrent /downloads
+
+VOLUME /config
+VOLUME /torrents
+VOLUME /downloads
 
 EXPOSE 8080
 
-COPY start.sh /
-RUN chmod +x /start.sh
+USER qbittorrent
+
 CMD ["/start.sh"]

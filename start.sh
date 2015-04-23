@@ -1,7 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
-if [ ! -f /root/.config/qBittorrent/qBittorrent.conf ] ; then
-	cp /build/qBittorrent.conf /root/.config/qBittorrent/qBittorrent.conf
+if [ ! -f /config/qBittorrent.conf ]
+then
+	cp /default/qBittorrent.conf /config/qBittorrent.conf
 fi
 
 echo "Starting qbittorrent..."
