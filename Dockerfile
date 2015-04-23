@@ -23,6 +23,7 @@ VOLUME /torrents
 VOLUME /downloads
 
 EXPOSE 8080
+EXPOSE 6881
 
 USER qbittorrent
 
