@@ -28,3 +28,9 @@ It is probably a good idea to add `--restart=always` so the container restarts i
 You should change `6081` to some random  port number (also change in the settings).
 
 _Note: For the container to run, the legal notice had to be automatically accepted. By running the container, you are accepting its terms. Toggle the flag in `qBittorrent.conf` to display the notice again._
+
+
+Feedbacks
+---------
+
+Having more issues? [Report a bug on GitHub](https://github.com/wernight/docker-qbittorrent/issues).
