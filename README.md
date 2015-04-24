@@ -29,6 +29,8 @@ You should change `6081` to some random  port number (also change in the setting
 
 _Note: For the container to run, the legal notice had to be automatically accepted. By running the container, you are accepting its terms. Toggle the flag in `qBittorrent.conf` to display the notice again._
 
+_Note: `520` was chosen randomly to prevent running as root or as another known user on your system; at least until [issue #11253](https://github.com/docker/docker/pull/11253) is fixed._
+
 
 Feedbacks
 ---------
