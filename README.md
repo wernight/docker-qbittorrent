@@ -5,12 +5,18 @@
 
 [Docker](https://www.docker.com/) image for [qBittorrent](http://www.qbittorrent.org/) NoX (headless with remote web interface).
 
+This image is:
+
+  * **Small**: Based on official [Alpine](https://registry.hub.docker.com/_/alpine/) Docker image.
+  * **Simple**: Exposes correct ports, configured for remote access...
+  * **Secure**: Runs as non-root user with random UID/GID `520`.
+
 ### Usage
 
 All mounts and ports are optional and qBittorrent will work even with only:
 
     $ docker run wernight/qbittorrent
-    
+
 ... however that way some ports used to connect to peers are not exposed, accessing the
 web interface requires you to proxy port 8080, and all settings as well as downloads will
 be lost if the container is removed.

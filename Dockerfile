@@ -1,81 +1,65 @@
-FROM debian:jessie
+FROM alpine:3.4
 
-RUN buildDeps=' \
-         cmake \
+# Install required packages
+RUN apk add --no-cache \
+      boost-system \
+      boost-thread \
+      ca-certificates \
+      qt5-qtbase
+
+COPY main.patch /
+
+RUN set -x \
+       # Install build dependencies
+    && apk add --no-cache -t deps \
+         boost-dev \
          curl \
+         cmake \
          g++ \
-         libboost-system-dev \
-         libqt4-dev \
-         libssl-dev \
          make \
-         pkg-config \
-         qtbase5-dev \
-         qttools5-dev-tools \
-    ' \
-    && set -x \
-
-       # Install dependencies
-    && apt-get update \
-    && apt-get install -y --no-install-recommends \
-         $buildDeps \
-         ca-certificates \
-         libboost-system1.55.0 \
-         libc6 \
-         libgcc1 \
-         libqt4-network \
-         libqt5network5 \
-         libqt5widgets5 \
-         libqt5xml5 \
-         libqtcore4 \
-         libstdc++6 \
-         zlib1g \
+         qt5-qttools-dev \
 
        # Build lib rasterbar from source code (required by qBittorrent)
     && LIBTORRENT_RASTERBAR_URL=$(curl -L http://www.qbittorrent.org/download.php | grep -Eo 'https?://[^"]*libtorrent[^"]*\.tar\.gz[^"]*' | head -n1) \
-    && mkdir -p /tmp/libtorrent-rasterbar \
-    && curl -L $LIBTORRENT_RASTERBAR_URL | tar xzC /tmp/libtorrent-rasterbar --strip-components=1 \
-    && cd /tmp/libtorrent-rasterbar \
+    && curl -L $LIBTORRENT_RASTERBAR_URL | tar xzC /tmp \
+    && cd /tmp/libtorrent-rasterbar* \
     && mkdir build \
     && cd build \
     && cmake .. \
     && make install \
 
        # Build qBittorrent from source code
-    && QBITTORRENT_URL=$(curl -L http://www.qbittorrent.org/download.php | grep -Eo 'https?://[^"]*qbittorrent[^"]*\.tar\.gz[^"]*' | head -n1) \
-    && mkdir -p /tmp/qbittorrent \
-    && curl -L $QBITTORRENT_URL | tar xzC /tmp/qbittorrent --strip-components=1 \
-    && cd /tmp/qbittorrent \
-    && ./configure --disable-gui \
+    && QBITTORRENT_URL=$(curl -L http://www.qbittorrent.org/download.php | grep -Eo 'https?://[^"]*qbittorrent[^"]*\.tar\.xz[^"]*' | head -n1) \
+    && curl -L $QBITTORRENT_URL | tar xJC /tmp \
+    && cd /tmp/qbittorrent* \
+    && ln -s /usr/bin/lrelease /usr/bin/lrelease-qt4 \
+    && PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ./configure --disable-gui \
+       # Patch: Disable stack trace because it requires libexecline-dev which isn't available on Alpine 3.4.
+    && cd src/app \
+    && patch -i /main.patch \
+    && rm /main.patch \
+    && cd ../.. \
     && make install \
 
-       # Install dumb-init
-       # https://github.com/Yelp/dumb-init
-    && DUMP_INIT_URI=$(curl -L https://github.com/Yelp/dumb-init/releases/latest | grep -Po '(?<=href=")[^"]+_amd64(?=")') \
-    && curl -Lo /usr/local/bin/dumb-init "https://github.com/$DUMP_INIT_URI" \
-    && chmod +x /usr/local/bin/dumb-init \
-
        # Clean-up
-    && apt-get purge --auto-remove -y $buildDeps \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && cd / \
+    && apk del --purge deps \
+    && rm -rf /tmp/* \
+
+       # Add non-root user
+    && adduser -S -D -u 520 -s /sbin/nologin qbittorrent \
 
        # Create symbolic links to simplify mounting
-    && useradd --system --uid 520 -m --shell /usr/sbin/nologin qbittorrent \
-
-    && mkdir -p /home/qbittorrent/.config/qBittorrent \
     && ln -s /home/qbittorrent/.config/qBittorrent /config \
-
-    && mkdir -p /home/qbittorrent/.local/share/data/qBittorrent \
     && ln -s /home/qbittorrent/.local/share/data/qBittorrent /torrents \
+    && mkdir /downloads && chown qbittorrent /downloads \
 
-    && chown -R qbittorrent:qbittorrent /home/qbittorrent/ \
-
-    && mkdir /downloads \
-    && chown qbittorrent:qbittorrent /downloads
+       # Check it works
+    && su qbittorrent -s /bin/sh -c 'qbittorrent-nox -v'
 
 # Default configuration file.
 COPY qBittorrent.conf /default/qBittorrent.conf
-COPY entrypoint.sh /
+COPY start.sh /
 
 VOLUME ["/config", "/torrents", "/downloads"]
 
@@ -83,5 +67,4 @@ EXPOSE 8080 6881
 
 USER qbittorrent
 
-ENTRYPOINT ["/usr/local/bin/dumb-init", "/entrypoint.sh"]
-CMD ["qbittorrent-nox"]
+CMD ["/start.sh"]
