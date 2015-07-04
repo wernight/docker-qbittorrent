@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Allow groups to change files.
+umask 002
+
 # Default configuration file
 if [ ! -f /config/qBittorrent.conf ]
 then
