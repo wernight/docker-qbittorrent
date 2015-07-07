@@ -1,13 +1,13 @@
-#!/bin/sh
-
-# Allow groups to change files.
-umask 002
+#!/bin/sh -e
 
 # Default configuration file
 if [ ! -f /config/qBittorrent.conf ]
 then
 	cp /default/qBittorrent.conf /config/qBittorrent.conf
 fi
+
+# Allow groups to change files.
+umask 002
 
 echo "Starting qbittorrent..."
 exec qbittorrent-nox $*
