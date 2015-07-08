@@ -9,5 +9,4 @@ fi
 # Allow groups to change files.
 umask 002
 
-echo "Starting qbittorrent..."
-exec qbittorrent-nox $*
+exec "$@"
