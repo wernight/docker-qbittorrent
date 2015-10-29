@@ -1,7 +1,12 @@
 qBittorrent Docker Image
 ========================
 
-[Docker](https://www.docker.com/) image for [qBittorrent](http://www.qbittorrent.org/).
+[![](https://badge.imagelayers.io/wernight/qbittorrent:latest.svg)](https://imagelayers.io/?images=wernight/qbittorrent:latest 'Get your own badge on imagelayers.io')
+
+[Docker](https://www.docker.com/) image for [qBittorrent](http://www.qbittorrent.org/) NoX (headless with remove web interface).
+
+Usage
+-----
 
 Fix create some directories as user 520 (`qbittorrent`):
 
@@ -25,7 +30,7 @@ To have webUI running on [http://localhost:8080](http://localhost:8080) (usernam
 
 It is probably a good idea to add `--restart=always` so the container restarts if it goes down.
 
-You should change `6081` to some random  port number (also change in the settings).
+You can change `6081` to some random  port number (also change in the settings).
 
 _Note: For the container to run, the legal notice had to be automatically accepted. By running the container, you are accepting its terms. Toggle the flag in `qBittorrent.conf` to display the notice again._
 
