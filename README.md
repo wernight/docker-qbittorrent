@@ -5,8 +5,7 @@ qBittorrent Docker Image
 
 [Docker](https://www.docker.com/) image for [qBittorrent](http://www.qbittorrent.org/) NoX (headless with remove web interface).
 
-Usage
------
+### Usage
 
 Fix create some directories as user 520 (`qbittorrent`):
 
@@ -37,7 +36,6 @@ _Note: For the container to run, the legal notice had to be automatically accept
 _Note: `520` was chosen randomly to prevent running as root or as another known user on your system; at least until [issue #11253](https://github.com/docker/docker/pull/11253) is fixed._
 
 
-Feedbacks
----------
+### Feedbacks
 
 Having more issues? [Report a bug on GitHub](https://github.com/wernight/docker-qbittorrent/issues).
