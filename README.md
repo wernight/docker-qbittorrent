@@ -1,6 +1,3 @@
-qBittorrent Docker Image
-========================
-
 [![](https://badge.imagelayers.io/wernight/qbittorrent:latest.svg)](https://imagelayers.io/?images=wernight/qbittorrent:latest 'Get your own badge on imagelayers.io')
 
 [Docker](https://www.docker.com/) image for [qBittorrent](http://www.qbittorrent.org/) NoX (headless with remove web interface).
