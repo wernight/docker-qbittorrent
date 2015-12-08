@@ -1,6 +1,8 @@
-[![](https://badge.imagelayers.io/wernight/qbittorrent:latest.svg)](https://imagelayers.io/?images=wernight/qbittorrent:latest 'Get your own badge on imagelayers.io')
+  * `latest` is the latest release built from source code [![](https://badge.imagelayers.io/wernight/qbittorrent:latest.svg)](https://imagelayers.io/?images=wernight/qbittorrent:latest 'Get your own badge on imagelayers.io')
+  * `3.3.1` [![](https://badge.imagelayers.io/wernight/qbittorrent:3.3.1.svg)](https://imagelayers.io/?images=wernight/qbittorrent:3.3.1 'Get your own badge on imagelayers.io')
+  * `3.1.10`, `stable` is the latest packaged stable version [![](https://badge.imagelayers.io/wernight/qbittorrent:stable.svg)](https://imagelayers.io/?images=wernight/qbittorrent:stable 'Get your own badge on imagelayers.io')
 
-[Docker](https://www.docker.com/) image for [qBittorrent](http://www.qbittorrent.org/) NoX (headless with remove web interface).
+[Docker](https://www.docker.com/) image for [qBittorrent](http://www.qbittorrent.org/) NoX (headless with remote web interface).
 
 ### Usage
 
