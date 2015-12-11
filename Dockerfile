@@ -4,14 +4,16 @@ MAINTAINER Werner Beroux <werner@beroux.com>
 
 RUN echo "Install dependencies" \
     && apt-get update \
-    && apt-get install -y \
+    && apt-get install -y --no-install-recommends \
+         ca-certificates \
          cmake \
          curl \
          g++ \
          libboost-system-dev \
-         libssl-dev \
-         pkg-config \
          libqt4-dev \
+         libssl-dev \
+         make \
+         pkg-config \
          qtbase5-dev \
 
          libboost-system1.55.0 \
@@ -49,6 +51,7 @@ RUN echo "Install dependencies" \
          g++ \
          libboost-system-dev \
          libssl-dev \
+         make \
          pkg-config \
          libqt4-dev \
          qtbase5-dev \
