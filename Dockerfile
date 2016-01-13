@@ -62,19 +62,19 @@ RUN echo "Install dependencies" \
     && useradd --system --uid 520 -m --shell /usr/sbin/nologin qbittorrent \
 
     && mkdir -p /home/qbittorrent/.config/qBittorrent \
-    && chown qbittorrent:qbittorrent /home/qbittorrent/.config/qBittorrent \
     && ln -s /home/qbittorrent/.config/qBittorrent /config \
 
     && mkdir -p /home/qbittorrent/.local/share/data/qBittorrent \
-    && chown qbittorrent:qbittorrent /home/qbittorrent/.local/share/data/qBittorrent \
     && ln -s /home/qbittorrent/.local/share/data/qBittorrent /torrents \
+
+    && chown -R qbittorrent:qbittorrent /home/qbittorrent/ \
 
     && mkdir /downloads \
     && chown qbittorrent:qbittorrent /downloads
 
 # Default configuration file.
-ADD qBittorrent.conf /default/qBittorrent.conf
-ADD entrypoint.sh /
+COPY qBittorrent.conf /default/qBittorrent.conf
+COPY entrypoint.sh /
 
 VOLUME /config
 VOLUME /torrents
