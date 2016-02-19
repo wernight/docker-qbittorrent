@@ -31,8 +31,8 @@ RUN buildDeps=' \
          libstdc++6 \
          zlib1g \
     && echo "Download qBittorrent source code" \
-    && LIBTORRENT_RASTERBAR_URL=$(curl -L http://www.qbittorrent.org/download.php | grep -Eo 'https?://[^"]*libtorrent[^"]*\.tar\.gz[^"]*' | head -n1) \
-    && QBITTORRENT_URL=$(curl -L http://www.qbittorrent.org/download.php | grep -Eo 'https?://[^"]*qbittorrent[^"]*\.tar\.gz[^"]*' | head -n1) \
+    && LIBTORRENT_RASTERBAR_URL=https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_0_8/libtorrent-rasterbar-1.0.8.tar.gz \
+    && QBITTORRENT_URL=http://sourceforge.net/projects/qbittorrent/files/qbittorrent/qbittorrent-3.3.3/qbittorrent-3.3.3.tar.gz/download \
     && mkdir -p /tmp/libtorrent-rasterbar \
     && mkdir -p /tmp/qbittorrent \
     && curl -L $LIBTORRENT_RASTERBAR_URL | tar xzC /tmp/libtorrent-rasterbar --strip-components=1 \
