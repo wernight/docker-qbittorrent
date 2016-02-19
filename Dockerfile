@@ -2,10 +2,7 @@ FROM debian:jessie
 
 MAINTAINER Werner Beroux <werner@beroux.com>
 
-RUN echo "Install dependencies" \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends \
-         ca-certificates \
+RUN buildDeps=' \
          cmake \
          curl \
          g++ \
@@ -15,7 +12,13 @@ RUN echo "Install dependencies" \
          make \
          pkg-config \
          qtbase5-dev \
-
+    ' \
+    && set -x \
+    && echo "Install dependencies" \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+         $buildDeps \
+         ca-certificates \
          libboost-system1.55.0 \
          libc6 \
          libgcc1 \
@@ -45,16 +48,7 @@ RUN echo "Install dependencies" \
     && make install \
 
     && echo "Clean-up" \
-    && apt-get purge --auto-remove -y \
-         cmake \
-         curl \
-         g++ \
-         libboost-system-dev \
-         libssl-dev \
-         make \
-         pkg-config \
-         libqt4-dev \
-         qtbase5-dev \
+    && apt-get purge --auto-remove -y $buildDeps \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
 
