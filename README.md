@@ -1,6 +1,7 @@
-  * [`latest` is the latest release built from source code](https://github.com/wernight/docker-qbittorrent/blob/master/Dockerfile)
-  * [`3`, `3.3`, `3.3.1`](https://github.com/wernight/docker-qbittorrent/blob/v3.3.1/Dockerfile)
-  * [`3.1.10`, `stable` is the latest packaged stable version](https://github.com/wernight/docker-qbittorrent/blob/stable/Dockerfile)
+  * [`latest` is the latest release built from source code (currently 3.3.x)](https://github.com/wernight/docker-qbittorrent/blob/master/Dockerfile)
+  * [`stable` is the latest packaged stable Debian package version (currently 3.1.x)](https://github.com/wernight/docker-qbittorrent/blob/stable/Dockerfile)
+  * [`3`, `3.3`, `3.3.3` tagged version built from source code](https://github.com/wernight/docker-qbittorrent/blob/v3.3.3/Dockerfile)
+  * [`3.3.1` tagged version built from source code](https://github.com/wernight/docker-qbittorrent/blob/v3.3.1/Dockerfile)
 
 [![](https://badge.imagelayers.io/wernight/qbittorrent:latest.svg)](https://imagelayers.io/?images=wernight/qbittorrent:latest,wernight/qbittorrent:stable)
 
