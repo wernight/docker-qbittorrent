@@ -12,6 +12,7 @@ RUN buildDeps=' \
          make \
          pkg-config \
          qtbase5-dev \
+         qttools5-dev-tools \
     ' \
     && set -x \
     && echo "Install dependencies" \
