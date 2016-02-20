@@ -26,6 +26,7 @@ RUN buildDeps=' \
          libqt4-network \
          libqt5network5 \
          libqt5widgets5 \
+         libqt5xml5 \
          libqtcore4 \
          libstdc++6 \
          zlib1g \
