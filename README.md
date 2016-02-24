@@ -9,21 +9,29 @@
 
 ### Usage
 
-Fix create some directories as user 520 (`qbittorrent`):
+All mounts and ports are optional and qBittorrent will work even with only:
+
+    $ docker run wernight/qbittorrent
+    
+... however that way some ports used to connect to peers are not exposed, accessing the
+web interface requires you to proxy port 8080, and all settings as well as downloads will
+be lost if the container is removed.
+
+So let's create some directories as user 520 (`qbittorrent`):
 
     $ mkdir config torrents downloads
     $ chown 520 config torrents downloads
 
-Run using this command:
+... and start using this command:
 
 	$ docker run -d \
 		-p 8080:8080 -p 6881:6881/tcp -p 6881:6881/udp \
-		-v /data/qbittorrent/config:/config \
-		-v /data/qbittorrent/torrents:/torrents \
-		-v /data/qbittorrent/downloads:/downloads \
+		-v $PWD/config:/config \
+		-v $PWD/torrents:/torrents \
+		-v $PWD/downloads:/downloads \
 		wernight/qbittorrent
 
-To have webUI running on [http://localhost:8080](http://localhost:8080) (username: `admin`, password: `adminadmin`) with config in the following locations mounted:
+... to have webUI running on [http://localhost:8080](http://localhost:8080) (username: `admin`, password: `adminadmin`) with config in the following locations mounted:
 
   * `/config`: qBittorrent configuration files
   * `/torrents`: Torrent files
