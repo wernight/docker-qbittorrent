@@ -3,8 +3,6 @@
   * [`3`, `3.3`, `3.3.3` tagged version built from source code](https://github.com/wernight/docker-qbittorrent/blob/v3.3.3/Dockerfile)
   * [`3.3.1` tagged version built from source code](https://github.com/wernight/docker-qbittorrent/blob/v3.3.1/Dockerfile)
 
-[![](https://badge.imagelayers.io/wernight/qbittorrent:latest.svg)](https://imagelayers.io/?images=wernight/qbittorrent:latest,wernight/qbittorrent:stable)
-
 [Docker](https://www.docker.com/) image for [qBittorrent](http://www.qbittorrent.org/) NoX (headless with remote web interface).
 
 ### Usage
