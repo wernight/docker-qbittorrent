@@ -1,7 +1,5 @@
 FROM debian:jessie
 
-MAINTAINER Werner Beroux <werner@beroux.com>
-
 RUN buildDeps=' \
          cmake \
          curl \
@@ -15,7 +13,8 @@ RUN buildDeps=' \
          qttools5-dev-tools \
     ' \
     && set -x \
-    && echo "Install dependencies" \
+
+       # Install dependencies
     && apt-get update \
     && apt-get install -y --no-install-recommends \
          $buildDeps \
@@ -30,7 +29,8 @@ RUN buildDeps=' \
          libqtcore4 \
          libstdc++6 \
          zlib1g \
-    && echo "Download qBittorrent source code" \
+
+       # Download qBittorrent source code
     && LIBTORRENT_RASTERBAR_URL=$(curl -L http://www.qbittorrent.org/download.php | grep -Eo 'https?://[^"]*libtorrent[^"]*\.tar\.gz[^"]*' | head -n1) \
     && QBITTORRENT_URL=$(curl -L http://www.qbittorrent.org/download.php | grep -Eo 'https?://[^"]*qbittorrent[^"]*\.tar\.gz[^"]*' | head -n1) \
     && mkdir -p /tmp/libtorrent-rasterbar \
@@ -38,7 +38,7 @@ RUN buildDeps=' \
     && curl -L $LIBTORRENT_RASTERBAR_URL | tar xzC /tmp/libtorrent-rasterbar --strip-components=1 \
     && curl -L $QBITTORRENT_URL | tar xzC /tmp/qbittorrent --strip-components=1 \
 
-    && echo "Build and install" \
+       # Build and install
     && cd /tmp/libtorrent-rasterbar \
     && mkdir build \
     && cd build \
@@ -49,12 +49,12 @@ RUN buildDeps=' \
     && ./configure --disable-gui \
     && make install \
 
-    && echo "Clean-up" \
+       # Clean-up
     && apt-get purge --auto-remove -y $buildDeps \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
 
-    && echo "Create symbolic links to simplify mounting" \
+       # Create symbolic links to simplify mounting
     && useradd --system --uid 520 -m --shell /usr/sbin/nologin qbittorrent \
 
     && mkdir -p /home/qbittorrent/.config/qBittorrent \
@@ -72,12 +72,9 @@ RUN buildDeps=' \
 COPY qBittorrent.conf /default/qBittorrent.conf
 COPY entrypoint.sh /
 
-VOLUME /config
-VOLUME /torrents
-VOLUME /downloads
+VOLUME ["/config", "/torrents", "/downloads"]
 
-EXPOSE 8080
-EXPOSE 6881
+EXPOSE 8080 6881
 
 USER qbittorrent
 
