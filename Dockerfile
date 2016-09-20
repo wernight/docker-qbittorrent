@@ -48,6 +48,12 @@ RUN buildDeps=' \
     && ./configure --disable-gui \
     && make install \
 
+       # Install dumb-init
+       # https://github.com/Yelp/dumb-init
+    && DUMP_INIT_URI=$(curl -L https://github.com/Yelp/dumb-init/releases/latest | grep -Po '(?<=href=")[^"]+_amd64(?=")') \
+    && curl -Lo /usr/local/bin/dumb-init "https://github.com/$DUMP_INIT_URI" \
+    && chmod +x /usr/local/bin/dumb-init \
+
        # Clean-up
     && apt-get purge --auto-remove -y $buildDeps \
     && apt-get clean \
@@ -77,5 +83,5 @@ EXPOSE 8080 6881
 
 USER qbittorrent
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/dumb-init", "/entrypoint.sh"]
 CMD ["qbittorrent-nox"]
