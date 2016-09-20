@@ -30,21 +30,20 @@ RUN buildDeps=' \
          libstdc++6 \
          zlib1g \
 
-       # Download qBittorrent source code
+       # Build lib rasterbar from source code (required by qBittorrent)
     && LIBTORRENT_RASTERBAR_URL=$(curl -L http://www.qbittorrent.org/download.php | grep -Eo 'https?://[^"]*libtorrent[^"]*\.tar\.gz[^"]*' | head -n1) \
-    && QBITTORRENT_URL=$(curl -L http://www.qbittorrent.org/download.php | grep -Eo 'https?://[^"]*qbittorrent[^"]*\.tar\.gz[^"]*' | head -n1) \
     && mkdir -p /tmp/libtorrent-rasterbar \
-    && mkdir -p /tmp/qbittorrent \
     && curl -L $LIBTORRENT_RASTERBAR_URL | tar xzC /tmp/libtorrent-rasterbar --strip-components=1 \
-    && curl -L $QBITTORRENT_URL | tar xzC /tmp/qbittorrent --strip-components=1 \
-
-       # Build and install
     && cd /tmp/libtorrent-rasterbar \
     && mkdir build \
     && cd build \
     && cmake .. \
     && make install \
 
+       # Build qBittorrent from source code
+    && QBITTORRENT_URL=$(curl -L http://www.qbittorrent.org/download.php | grep -Eo 'https?://[^"]*qbittorrent[^"]*\.tar\.gz[^"]*' | head -n1) \
+    && mkdir -p /tmp/qbittorrent \
+    && curl -L $QBITTORRENT_URL | tar xzC /tmp/qbittorrent --strip-components=1 \
     && cd /tmp/qbittorrent \
     && ./configure --disable-gui \
     && make install \
