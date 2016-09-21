@@ -25,7 +25,7 @@ RUN set -x \
  && chmod +x /usr/local/bin/dumb-init \
     \
     # Build lib rasterbar from source code (required by qBittorrent)
- && LIBTORRENT_RASTERBAR_URL=$(curl -L http://www.qbittorrent.org/download.php | grep -Eo 'https?://[^"]*libtorrent[^"]*\.tar\.gz[^"]*' | head -n1) \
+ && LIBTORRENT_RASTERBAR_URL='https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_0_10/libtorrent-rasterbar-1.0.10.tar.gz' \
  && curl -L $LIBTORRENT_RASTERBAR_URL | tar xzC /tmp \
  && cd /tmp/libtorrent-rasterbar* \
  && mkdir build \
@@ -34,7 +34,7 @@ RUN set -x \
  && make install \
     \
     # Build qBittorrent from source code
- && QBITTORRENT_URL=$(curl -L http://www.qbittorrent.org/download.php | grep -Eo 'https?://[^"]*qbittorrent[^"]*\.tar\.xz[^"]*' | head -n1) \
+ && QBITTORRENT_URL='http://sourceforge.net/projects/qbittorrent/files/qbittorrent/qbittorrent-3.3.7/qbittorrent-3.3.7.tar.xz/download' \
  && curl -L $QBITTORRENT_URL | tar xJC /tmp \
  && cd /tmp/qbittorrent* \
  && ln -s /usr/bin/lrelease /usr/bin/lrelease-qt4 \
