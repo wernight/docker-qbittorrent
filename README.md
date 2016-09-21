@@ -1,17 +1,32 @@
-  * [`latest` is the latest release built from source code (currently 3.3.x)](https://github.com/wernight/docker-qbittorrent/blob/master/Dockerfile) [![](https://images.microbadger.com/badges/image/wernight/qbittorrent.svg)](http://microbadger.com/images/wernight/qbittorrent "Get your own image badge on microbadger.com")
-  * [`stable` is the latest packaged stable Debian package version (currently 3.1.x)](https://github.com/wernight/docker-qbittorrent/blob/stable/Dockerfile) [![](https://images.microbadger.com/badges/image/wernight/qbittorrent:stable.svg)](http://microbadger.com/images/wernight/qbittorrent "Get your own image badge on microbadger.com")
-  * [`3`, `3.3`, `3.3.3` tagged version built from source code](https://github.com/wernight/docker-qbittorrent/blob/v3.3.3/Dockerfile)
-  * [`3.3.1` tagged version built from source code](https://github.com/wernight/docker-qbittorrent/blob/v3.3.1/Dockerfile)
+Supported tags and respective `Dockerfile` links
+================================================
 
-[Docker](https://www.docker.com/) image for [qBittorrent](http://www.qbittorrent.org/) NoX (headless with remote web interface).
+  * [`latest` is the latest release built from source code on Alpine Linux (currently 3.3.x)](https://github.com/wernight/docker-qbittorrent/blob/master/Dockerfile) [![](https://images.microbadger.com/badges/image/wernight/qbittorrent.svg)](http://microbadger.com/images/wernight/qbittorrent "Get your own image badge on microbadger.com")
+  * [`stable` is the latest packaged stable Debian packaged version (currently 3.1.x)](https://github.com/wernight/docker-qbittorrent/blob/stable/Dockerfile) [![](https://images.microbadger.com/badges/image/wernight/qbittorrent:stable.svg)](http://microbadger.com/images/wernight/qbittorrent "Get your own image badge on microbadger.com")
+  * [`3`, `3.3`, `3.3.7` tagged version built from source code (based on Alpine)](https://github.com/wernight/docker-qbittorrent/blob/v3.3.7/Dockerfile)
+  * [`3.3.3` tagged version built from source code (based on Debian)](https://github.com/wernight/docker-qbittorrent/blob/v3.3.3/Dockerfile)
+  * [`3.3.1` tagged version built from source code (based on Debian)](https://github.com/wernight/docker-qbittorrent/blob/v3.3.1/Dockerfile)
+
+
+What is qBittorrent?
+====================
+
+[qBittorrent](http://www.qbittorrent.org/) NoX is the headless with remote web interface version of qBittorrent BitTorrent client.
+
+![qBittorrent logo](https://github.com/wernight/docker-qbittorrent/blob/master/docs/qbittorrent-logo.png?raw=true)
+
+
+How to use this image
+=====================
 
 This image is:
 
-  * **Small**: Based on official [Alpine](https://registry.hub.docker.com/_/alpine/) Docker image.
+  * **Small**: `:latest` is based on official [Alpine](https://registry.hub.docker.com/_/alpine/) Docker image.
   * **Simple**: Exposes correct ports, configured for remote access...
-  * **Secure**: Runs as non-root user with random UID/GID `520`.
+  * **Secure**: Runs as non-root user with random UID/GID `520`, and handles correctly PID 1 (using dumb-init).
 
-### Usage
+Usage
+-----
 
 All mounts and ports are optional and qBittorrent will work even with only:
 
@@ -49,7 +64,19 @@ _Note: For the container to run, the legal notice had to be automatically accept
 
 _Note: `520` was chosen randomly to prevent running as root or as another known user on your system; at least until [issue #11253](https://github.com/docker/docker/pull/11253) is fixed._
 
+Image Variants
+--------------
 
-### Feedbacks
+### `wernight/qbittorrent:<version>`
+
+Those are tagged versions built from source code. Older versions are based on Debian while newer ones are based on Alpine Linux (just like `:latest`).
+
+### `wernight/qbittorrent:stable`
+
+Works like `:latest` but based on Debian using only the package manager to install it. It's **more tested**, by Debian and package manager, but the image is *larger* than the one based on Alpine and it's an *older* version.
+
+
+User Feedbacks
+==============
 
 Having more issues? [Report a bug on GitHub](https://github.com/wernight/docker-qbittorrent/issues).
