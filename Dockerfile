@@ -55,9 +55,12 @@ RUN set -x \
  && adduser -S -D -u 520 -s /sbin/nologin qbittorrent \
     \
     # Create symbolic links to simplify mounting
+ && mkdir -p /home/qbittorrent/.config/qBittorrent \
+ && mkdir -p /home/qbittorrent/.local/share/data/qBittorrent \
+ && mkdir /downloads \
+ && chown qbittorrent -R /home/qbittorrent /downloads \
  && ln -s /home/qbittorrent/.config/qBittorrent /config \
  && ln -s /home/qbittorrent/.local/share/data/qBittorrent /torrents \
- && mkdir /downloads && chown qbittorrent /downloads \
     \
     # Check it works
  && su qbittorrent -s /bin/sh -c 'qbittorrent-nox -v'
@@ -66,7 +69,7 @@ RUN set -x \
 COPY qBittorrent.conf /default/qBittorrent.conf
 COPY entrypoint.sh /
 
-VOLUME ["/config", "/torrents", "/downloads"]
+#VOLUME ["/config", "/torrents", "/downloads"]
 
 EXPOSE 8080 6881
 
