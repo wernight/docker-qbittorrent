@@ -34,27 +34,23 @@ All mounts and ports are optional and qBittorrent will work even with only:
 
 ... however that way some ports used to connect to peers are not exposed, accessing the
 web interface requires you to proxy port 8080, and all settings as well as downloads will
-be lost if the container is removed.
+be lost if the container is removed. So start it using this command:
 
-So let's create some directories as user 520 (`qbittorrent`):
-
-    $ mkdir config torrents downloads
-    $ chown 520 config torrents downloads
-
-... and start using this command:
-
-	$ docker run -d \
+	$ docker run -d --user $UID:$GID \
 		-p 8080:8080 -p 6881:6881/tcp -p 6881:6881/udp \
 		-v $PWD/config:/config \
 		-v $PWD/torrents:/torrents \
 		-v $PWD/downloads:/downloads \
 		wernight/qbittorrent
 
-... to have webUI running on [http://localhost:8080](http://localhost:8080) (username: `admin`, password: `adminadmin`) with config in the following locations mounted:
+... to run as yourself and have WebUI running on [http://localhost:8080](http://localhost:8080)
+(username: `admin`, password: `adminadmin`) with config in the following locations mounted:
 
   * `/config`: qBittorrent configuration files
   * `/torrents`: Torrent files
   * `/downloads`: Download location
+
+Note: By default it runs as UID 520 and GID 520, but can run as any user/group.
 
 It is probably a good idea to add `--restart=always` so the container restarts if it goes down.
 
