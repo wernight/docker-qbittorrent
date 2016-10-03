@@ -36,6 +36,7 @@ All mounts and ports are optional and qBittorrent will work even with only:
 web interface requires you to proxy port 8080, and all settings as well as downloads will
 be lost if the container is removed. So start it using this command:
 
+    $ mkdir -p config torrents downloads
 	$ docker run -d --user $UID:$GID \
 		-p 8080:8080 -p 6881:6881/tcp -p 6881:6881/udp \
 		-v $PWD/config:/config \
