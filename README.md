@@ -64,6 +64,10 @@ _Note: `520` was chosen randomly to prevent running as root or as another known 
 Image Variants
 --------------
 
+### `wernight/qbittorrent:latest`
+
+Latest release of qBittorrent (No X) compiled on Alpine Linux from source code.
+
 ### `wernight/qbittorrent:<version>`
 
 Those are tagged versions built from source code. Older versions are based on Debian while newer ones are based on Alpine Linux (just like `:latest`).
