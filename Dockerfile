@@ -61,9 +61,8 @@ RUN set -x \
     # Build qBittorrent from source code
  && git clone https://github.com/qbittorrent/qBittorrent.git /tmp/qbittorrent \
  && cd /tmp/qbittorrent \
-    # Checkout latest release
- && latesttag=$(git describe --tags `git rev-list --tags --max-count=1`) \
- && git checkout $latesttag \
+    # Checkout specific release
+ && git checkout release-3.3.13 \
     # Compile
  && PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ./configure --disable-gui \
     # Patch: Disable stack trace because it requires libexecline-dev which isn't available on Alpine 3.6.
