@@ -2,20 +2,17 @@ FROM alpine:3.6
 
 # Install required packages
 RUN apk add --no-cache \
-      boost-system \
-      boost-thread \
-      ca-certificates \
-      qt5-qtbase
+        boost-system \
+        boost-thread \
+        ca-certificates \
+        dumb-init \
+        libressl \
+        qt5-qtbase
 
 # Compiling qBitTorrent following instructions on
 # https://github.com/qbittorrent/qBittorrent/wiki/Compiling-qBittorrent-on-Debian-and-Ubuntu#Libtorrent
 
 RUN set -x \
-    # Install runtime dependencies
- && apk add --no-cache \
-        ca-certificates \
-        libressl \
-
     # Install build dependencies
  && apk add --no-cache -t .build-deps \
         boost-dev \
@@ -25,14 +22,9 @@ RUN set -x \
         make \
         libressl-dev \
 
-    # Install dumb-init
-    # https://github.com/Yelp/dumb-init
- && curl -sSLo /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 \
- && chmod +x /usr/local/bin/dumb-init \
-
     # Build lib rasterbar from source code (required by qBittorrent)
     # Until https://github.com/qbittorrent/qBittorrent/issues/6132 is fixed, need to use version 1.0.*
-    #  && LIBTORRENT_RASTERBAR_URL=$(curl -sSL https://api.github.com/repos/arvidn/libtorrent/releases/latest | grep browser_download_url  | head -n 1 | cut -d '"' -f 4) \
+# && LIBTORRENT_RASTERBAR_URL=$(curl -sSL https://api.github.com/repos/arvidn/libtorrent/releases/latest | grep browser_download_url  | head -n 1 | cut -d '"' -f 4) \
  && LIBTORRENT_RASTERBAR_URL=https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_0_11/libtorrent-rasterbar-1.0.11.tar.gz \
  && mkdir /tmp/libtorrent-rasterbar \
  && curl -sSL $LIBTORRENT_RASTERBAR_URL | tar xzC /tmp/libtorrent-rasterbar \
