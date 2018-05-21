@@ -22,7 +22,7 @@ RUN set -x \
         libressl-dev \
     # Build lib rasterbar from source code (required by qBittorrent)
     # Until https://github.com/qbittorrent/qBittorrent/issues/6132 is fixed, need to use version 1.0.*
- && LIBTORRENT_RASTERBAR_URL=$(curl -sSL https://api.github.com/repos/arvidn/libtorrent/releases/latest | grep browser_download_url  | head -n 1 | cut -d '"' -f 4) \
+ && LIBTORRENT_RASTERBAR_URL="https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1_7/libtorrent-rasterbar-1.1.7.tar.gz" \
  && mkdir /tmp/libtorrent-rasterbar \
  && curl -sSL $LIBTORRENT_RASTERBAR_URL | tar xzC /tmp/libtorrent-rasterbar \
  && cd /tmp/libtorrent-rasterbar/* \
@@ -47,9 +47,7 @@ RUN set -x \
     # Build qBittorrent from source code
  && git clone https://github.com/qbittorrent/qBittorrent.git /tmp/qbittorrent \
  && cd /tmp/qbittorrent \
-    # Checkout latest release
- && latesttag=$(git describe --tags `git rev-list --tags --max-count=1`) \
- && git checkout $latesttag \
+ && git checkout release-4.1.0 \
     # Compile
  && PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ./configure --disable-gui --disable-stacktrace \
  && make install \
