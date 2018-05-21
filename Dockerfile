@@ -35,8 +35,6 @@ RUN set -x \
  && apk del --purge .build-deps \
  && rm -rf /tmp/*
 
-COPY main.patch /
-
 RUN set -x \
     # Install build dependencies
  && apk add --no-cache -t .build-deps \
@@ -44,6 +42,7 @@ RUN set -x \
         g++ \
         git \
         make \
+        libressl-dev \
         qt5-qttools-dev \
     # Build qBittorrent from source code
  && git clone https://github.com/qbittorrent/qBittorrent.git /tmp/qbittorrent \
@@ -52,12 +51,7 @@ RUN set -x \
  && latesttag=$(git describe --tags `git rev-list --tags --max-count=1`) \
  && git checkout $latesttag \
     # Compile
- && PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ./configure --disable-gui \
-    # Patch: Disable stack trace because it requires libexecline-dev which isn't available on Alpine 3.7.
- && cd src/app \
- && patch -i /main.patch \
- && rm /main.patch \
- && cd ../.. \
+ && PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ./configure --disable-gui --disable-stacktrace \
  && make install \
     # Clean-up
  && cd / \
