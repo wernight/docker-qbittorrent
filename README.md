@@ -57,7 +57,7 @@ Note: By default it runs as UID 520 and GID 520, but can run as any user/group.
 
 It is probably a good idea to add `--restart=always` so the container restarts if it goes down.
 
-You can change `6081` to some random  port number (also change in the settings).
+You can change `6881` to some random  port number (also change in the settings).
 
 _Note: For the container to run, the legal notice had to be automatically accepted. By running the container, you are accepting its terms. Toggle the flag in `qBittorrent.conf` to display the notice again._
 
