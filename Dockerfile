@@ -1,4 +1,4 @@
-FROM alpine:3.7
+FROM alpine:3.12
 
 # Install required packages
 RUN apk add --no-cache \
@@ -15,41 +15,35 @@ RUN set -x \
     # Install build dependencies
  && apk add --no-cache -t .build-deps \
         boost-dev \
-        curl \
         cmake \
+        curl \
         g++ \
-        make \
+        git \
         libressl-dev \
+        make \
+        qt5-qttools-dev \
     # Build lib rasterbar from source code (required by qBittorrent)
     # Until https://github.com/qbittorrent/qBittorrent/issues/6132 is fixed, need to use version 1.0.*
- && LIBTORRENT_RASTERBAR_URL="https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1_7/libtorrent-rasterbar-1.1.7.tar.gz" \
+ && LIBTORRENT_RASTERBAR_URL=https://github.com/arvidn/libtorrent/releases/download/libtorrent_1_2_7/libtorrent-rasterbar-1.2.7.tar.gz \
  && mkdir /tmp/libtorrent-rasterbar \
  && curl -sSL $LIBTORRENT_RASTERBAR_URL | tar xzC /tmp/libtorrent-rasterbar \
  && cd /tmp/libtorrent-rasterbar/* \
  && mkdir build \
  && cd build \
  && cmake .. \
- && make install \
-    # Clean-up
- && cd / \
- && apk del --purge .build-deps \
- && rm -rf /tmp/*
-
-RUN set -x \
-    # Install build dependencies
- && apk add --no-cache -t .build-deps \
-        boost-dev \
-        g++ \
-        git \
-        make \
-        libressl-dev \
-        qt5-qttools-dev \
+ && make \
+ && make DESTDIR=/ install \
+ && mv /usr/local/lib64/* /usr/local/lib \
+ && rmdir /usr/local/lib64 \
     # Build qBittorrent from source code
  && git clone https://github.com/qbittorrent/qBittorrent.git /tmp/qbittorrent \
  && cd /tmp/qbittorrent \
- && git checkout release-4.1.0 \
+    # Checkout latest release
+ && latesttag=release-4.2.5 \
+ && git checkout $latesttag \
     # Compile
- && PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ./configure --disable-gui --disable-stacktrace \
+ && ./configure --disable-gui --disable-stacktrace \
+ && make \
  && make install \
     # Clean-up
  && cd / \
@@ -81,3 +75,5 @@ EXPOSE 8080 6881
 
 ENTRYPOINT ["dumb-init", "/entrypoint.sh"]
 CMD ["qbittorrent-nox"]
+
+HEALTHCHECK --interval=5s --timeout=2s --retries=20 CMD curl --connect-timeout 15 --silent --show-error --fail http://localhost:8080/ >/dev/null || exit 1
