@@ -1,4 +1,4 @@
-FROM alpine:3.8
+FROM alpine:3.12
 
 # Install required packages
 RUN apk add --no-cache \
@@ -15,11 +15,13 @@ RUN set -x \
     # Install build dependencies
  && apk add --no-cache -t .build-deps \
         boost-dev \
-        curl \
         cmake \
+        curl \
         g++ \
-        make \
+        git \
         libressl-dev \
+        make \
+        qt5-qttools-dev \
     # Build lib rasterbar from source code (required by qBittorrent)
     # Until https://github.com/qbittorrent/qBittorrent/issues/6132 is fixed, need to use version 1.0.*
  && LIBTORRENT_RASTERBAR_URL=$(curl -sSL https://api.github.com/repos/arvidn/libtorrent/releases/latest | grep browser_download_url  | head -n 1 | cut -d '"' -f 4) \
@@ -29,21 +31,10 @@ RUN set -x \
  && mkdir build \
  && cd build \
  && cmake .. \
- && make install \
-    # Clean-up
- && cd / \
- && apk del --purge .build-deps \
- && rm -rf /tmp/*
-
-RUN set -x \
-    # Install build dependencies
- && apk add --no-cache -t .build-deps \
-        boost-dev \
-        g++ \
-        git \
-        make \
-        libressl-dev \
-        qt5-qttools-dev \
+ && make \
+ && make DESTDIR=/ install \
+ && mv /usr/local/lib64/* /usr/local/lib \
+ && rmdir /usr/local/lib64 \
     # Build qBittorrent from source code
  && git clone https://github.com/qbittorrent/qBittorrent.git /tmp/qbittorrent \
  && cd /tmp/qbittorrent \
@@ -51,7 +42,8 @@ RUN set -x \
  && latesttag=$(git describe --tags `git rev-list --tags --max-count=1`) \
  && git checkout $latesttag \
     # Compile
- && PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ./configure --disable-gui --disable-stacktrace \
+ && ./configure --disable-gui --disable-stacktrace \
+ && make \
  && make install \
     # Clean-up
  && cd / \
@@ -83,3 +75,5 @@ EXPOSE 8080 6881
 
 ENTRYPOINT ["dumb-init", "/entrypoint.sh"]
 CMD ["qbittorrent-nox"]
+
+HEALTHCHECK --interval=5s --timeout=2s --retries=20 CMD curl --connect-timeout 15 --silent --show-error --fail http://localhost:8080/ >/dev/null || exit 1
