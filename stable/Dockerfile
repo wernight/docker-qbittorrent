@@ -3,7 +3,7 @@ FROM debian:buster-slim
 RUN set -x \
     # Install qBittorrent-NoX
  && apt-get update \
- && apt-get install -y qbittorrent-nox dumb-init \
+ && apt-get install -y qbittorrent-nox dumb-init curl \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -31,9 +31,13 @@ COPY entrypoint.sh /
 
 VOLUME ["/config", "/torrents", "/downloads"]
 
-EXPOSE 8080 6881
+ENV HOME=/home/qbittorrent
 
 USER qbittorrent
 
+EXPOSE 8080 6881
+
 ENTRYPOINT ["dumb-init", "/entrypoint.sh"]
 CMD ["qbittorrent-nox"]
+
+HEALTHCHECK --interval=5s --timeout=2s --retries=20 CMD curl --connect-timeout 15 --silent --show-error --fail http://localhost:8080/ >/dev/null || exit 1
