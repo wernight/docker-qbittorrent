@@ -5,6 +5,7 @@ RUN apk add --no-cache \
         boost-system \
         boost-thread \
         ca-certificates \
+        curl \
         dumb-init \
         libressl \
         qt5-qtbase
@@ -16,7 +17,6 @@ RUN set -x \
  && apk add --no-cache -t .build-deps \
         boost-dev \
         cmake \
-        curl \
         g++ \
         git \
         libressl-dev \
