@@ -1,26 +1,28 @@
-FROM debian:stretch-slim
+FROM debian:buster-slim
 
 RUN set -x \
     # Install qBittorrent-NoX
-    && apt-get update \
-    && apt-get install -y qbittorrent-nox dumb-init \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+ && apt-get update \
+ && apt-get install -y qbittorrent-nox dumb-init \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+RUN set -x \
     # Add non-root user
-    && useradd --system --uid 520 -m --shell /usr/sbin/nologin qbittorrent \
-
+ && useradd --system --uid 520 -m --shell /usr/sbin/nologin qbittorrent \
     # Create symbolic links to simplify mounting
-    && mkdir -p /home/qbittorrent/.config/qBittorrent \
-    && chown qbittorrent:qbittorrent /home/qbittorrent/.config/qBittorrent \
-    && ln -s /home/qbittorrent/.config/qBittorrent /config \
-
-    && mkdir -p /home/qbittorrent/.local/share/data/qBittorrent \
-    && chown qbittorrent:qbittorrent /home/qbittorrent/.local/share/data/qBittorrent \
-    && ln -s /home/qbittorrent/.local/share/data/qBittorrent /torrents \
-
-    && mkdir /downloads \
-    && chown qbittorrent:qbittorrent /downloads
+ && mkdir -p /home/qbittorrent/.config/qBittorrent \
+ && chown qbittorrent:qbittorrent /home/qbittorrent/.config/qBittorrent \
+ && ln -s /home/qbittorrent/.config/qBittorrent /config \
+    \
+ && mkdir -p /home/qbittorrent/.local/share/data/qBittorrent \
+ && chown qbittorrent:qbittorrent /home/qbittorrent/.local/share/data/qBittorrent \
+ && ln -s /home/qbittorrent/.local/share/data/qBittorrent /torrents \
+    \
+ && mkdir /downloads \
+ && chown qbittorrent:qbittorrent /downloads \
+    # Check it works
+ && su qbittorrent -s /bin/sh -c 'qbittorrent-nox -v'
 
 
 # Default configuration file.
