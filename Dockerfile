@@ -5,6 +5,7 @@ RUN apk add --no-cache \
         boost-system \
         boost-thread \
         ca-certificates \
+        curl \
         dumb-init \
         libressl \
         qt5-qtbase
@@ -16,7 +17,6 @@ RUN set -x \
  && apk add --no-cache -t .build-deps \
         boost-dev \
         cmake \
-        curl \
         g++ \
         git \
         libressl-dev \
@@ -24,7 +24,7 @@ RUN set -x \
         qt5-qttools-dev \
     # Build lib rasterbar from source code (required by qBittorrent)
     # Until https://github.com/qbittorrent/qBittorrent/issues/6132 is fixed, need to use version 1.0.*
- && LIBTORRENT_RASTERBAR_URL=https://github.com/arvidn/libtorrent/releases/download/libtorrent_1_2_7/libtorrent-rasterbar-1.2.7.tar.gz \
+ && LIBTORRENT_RASTERBAR_URL=https://github.com/arvidn/libtorrent/releases/download/libtorrent-1.2.10/libtorrent-rasterbar-1.2.10.tar.gz \
  && mkdir /tmp/libtorrent-rasterbar \
  && curl -sSL $LIBTORRENT_RASTERBAR_URL | tar xzC /tmp/libtorrent-rasterbar \
  && cd /tmp/libtorrent-rasterbar/* \
