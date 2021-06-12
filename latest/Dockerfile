@@ -47,16 +47,18 @@ RUN set -x \
     # Clean-up
  && cd / \
  && apk del --purge .build-deps \
- && rm -rf /tmp/* \
+ && rm -rf /tmp/*
+
+RUN set -x \
     # Add non-root user
  && adduser -S -D -u 520 -g 520 -s /sbin/nologin qbittorrent \
     # Create symbolic links to simplify mounting
  && mkdir -p /home/qbittorrent/.config/qBittorrent \
- && mkdir -p /home/qbittorrent/.local/share/data/qBittorrent \
+ && mkdir -p /home/qbittorrent/.local/share/qBittorrent \
  && mkdir /downloads \
  && chmod go+rw -R /home/qbittorrent /downloads \
  && ln -s /home/qbittorrent/.config/qBittorrent /config \
- && ln -s /home/qbittorrent/.local/share/data/qBittorrent /torrents \
+ && ln -s /home/qbittorrent/.local/share/qBittorrent /torrents \
     # Check it works
  && su qbittorrent -s /bin/sh -c 'qbittorrent-nox -v'
 
