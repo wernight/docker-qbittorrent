@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  latest:
+    image: wernight/qbittorrent:latest
+    build:
+      context: latest
+  stable:
+    image: wernight/qbittorrent:stable
+    build:
+      context: stable

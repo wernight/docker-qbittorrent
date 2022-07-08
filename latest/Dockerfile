@@ -1,49 +1,85 @@
-FROM alpine:3.13
+FROM alpine:3.16
 
 # Install required packages
 RUN apk add --no-cache \
-        boost-system \
-        boost-thread \
+        boost \
         ca-certificates \
         curl \
         dumb-init \
-        libressl \
-        qt5-qtbase
+        icu \
+        libexecinfo \
+        libtool \
+        openssl \
+        python3 \
+        qt5-qtbase \
+        qt5-qtsvg \
+        qt5-qttools \
+        re2c \
+        zlib
 
 # Compiling qBitTorrent following instructions on
-# https://github.com/qbittorrent/qBittorrent/wiki/Compiling-qBittorrent-on-Debian-and-Ubuntu#Libtorrent
+# https://github.com/qbittorrent/qBittorrent/wiki/Compilation:-Alpine-Linux
 RUN set -x \
     # Install build dependencies
  && apk add --no-cache -t .build-deps \
+        autoconf \
+        automake \
         boost-dev \
+        build-base \
         cmake \
-        g++ \
         git \
-        libressl-dev \
-        make \
+        libtool \
+        linux-headers \
+        perl \
+        pkgconf \
+        python3 \
+        python3-dev \
+        re2c \
+        tar \
+        icu-dev \
+        libexecinfo-dev \
+        openssl-dev \
+        qt5-qtbase-dev \
         qt5-qttools-dev \
-    # Build lib rasterbar from source code (required by qBittorrent)
- && LIBTORRENT_RASTERBAR_URL=$(curl -sSL https://api.github.com/repos/arvidn/libtorrent/releases/latest | grep -E 'browser_download_url.*libtorrent-rasterbar'  | head -n 1 | cut -d '"' -f 4) \
- && mkdir /tmp/libtorrent-rasterbar \
- && curl -sSL $LIBTORRENT_RASTERBAR_URL | tar xzC /tmp/libtorrent-rasterbar \
- && cd /tmp/libtorrent-rasterbar/* \
- && mkdir build \
- && cd build \
- && cmake .. \
- && make \
- && make DESTDIR=/ install \
- && mv /usr/local/lib64/* /usr/local/lib \
- && rmdir /usr/local/lib64 \
-    # Build qBittorrent from source code
- && git clone https://github.com/qbittorrent/qBittorrent.git /tmp/qbittorrent \
+        zlib-dev \
+        qt5-qtsvg-dev \
+    # Build Ninja.
+ && git clone --shallow-submodules --recurse-submodules https://github.com/ninja-build/ninja.git /tmp/ninja \
+ && cd /tmp/ninja \
+ && git checkout "$(git tag -l --sort=-v:refname "v*" | head -n 1)" \
+ && cmake -Wno-dev -B build \
+        -D CMAKE_CXX_STANDARD=17 \
+        -D CMAKE_INSTALL_PREFIX="/usr/local" \
+ && cmake --build build \
+ && cmake --install build \
+    # Boost build file.
+ && curl -sNLk https://boostorg.jfrog.io/artifactory/main/release/1.76.0/source/boost_1_76_0.tar.gz -o "/tmp/boost_1_76_0.tar.gz" \
+ && tar xf "/tmp/boost_1_76_0.tar.gz" -C /tmp \
+    # Libtorrent
+ && git clone --shallow-submodules --recurse-submodules https://github.com/arvidn/libtorrent.git /tmp/libtorrent \
+ && cd /tmp/libtorrent \
+ && git checkout "$(git tag -l --sort=-v:refname "v2*" | head -n 1)" \
+ && cmake -Wno-dev -G Ninja -B build \
+        -D CMAKE_BUILD_TYPE="Release" \
+        -D CMAKE_CXX_STANDARD=17 \
+        -D BOOST_INCLUDEDIR="$HOME/boost_1_76_0/" \
+        -D CMAKE_INSTALL_LIBDIR="lib" \
+        -D CMAKE_INSTALL_PREFIX="/usr/local" \
+ && cmake --build build \
+ && cmake --install build \
+    # Build qBittorrent
+ && git clone --shallow-submodules --recurse-submodules https://github.com/qbittorrent/qBittorrent.git /tmp/qbittorrent \
  && cd /tmp/qbittorrent \
-    # Checkout latest release
- && latesttag=$(git describe --tags `git rev-list --tags --max-count=1`) \
- && git checkout $latesttag \
-    # Compile
- && ./configure --disable-gui --disable-stacktrace \
- && make \
- && make install \
+ && git checkout "$(git tag -l --sort=-v:refname | head -n 1)" \
+ && cmake -Wno-dev -G Ninja -B build \
+        -D CMAKE_BUILD_TYPE="release" \
+        -D GUI=off \
+        -D CMAKE_CXX_STANDARD=17 \
+        -D BOOST_INCLUDEDIR="$HOME/boost_1_76_0/" \
+        -D CMAKE_CXX_STANDARD_LIBRARIES="/usr/lib/libexecinfo.so" \
+        -D CMAKE_INSTALL_PREFIX="/usr/local" \
+ && cmake --build build \
+ && cmake --install build \
     # Clean-up
  && cd / \
  && apk del --purge .build-deps \
