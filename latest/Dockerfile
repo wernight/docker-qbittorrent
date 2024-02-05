@@ -1,4 +1,6 @@
-FROM alpine:3.19
+# 3.16 is the last release with libexecinfo which is required by qbittorrent.
+# https://pkgs.alpinelinux.org/packages?name=libexecinfo&branch=v3.16
+FROM alpine:3.16
 
 # Install required packages
 RUN apk add --no-cache \

@@ -2,10 +2,10 @@ version: '3'
 
 services:
   latest:
-    image: wernight/qbittorrent:latest
+    image: docker.io/wernight/qbittorrent:latest
     build:
       context: latest
   stable:
-    image: wernight/qbittorrent:stable
+    image: docker.io/wernight/qbittorrent:stable
     build:
       context: stable
