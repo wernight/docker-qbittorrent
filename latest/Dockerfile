@@ -1,5 +1,3 @@
-# 3.16 is the last release with libexecinfo which is required by qbittorrent.
-# https://pkgs.alpinelinux.org/packages?name=libexecinfo&branch=v3.16
 FROM alpine:3.20
 
 # Install required packages
@@ -50,7 +48,7 @@ RUN set -x \
  && cd /tmp/ninja \
  && git checkout "$(git tag -l --sort=-v:refname "v*" | head -n 1)" \
  && cmake -Wno-dev -B build \
-        -D CMAKE_CXX_STANDARD=17 \
+        -D CMAKE_CXX_STANDARD=20 \
         -D CMAKE_INSTALL_PREFIX="/usr/local" \
  && cmake --build build \
  && cmake --install build \
@@ -70,21 +68,24 @@ RUN set -x \
         -D CMAKE_INSTALL_LIBDIR="lib" \
         -D CMAKE_INSTALL_PREFIX="/usr/local" \
  && cmake --build build \
- && cmake --install build \
-    # Build qBittorrent
+ && cmake --install build
+
+# Build qBittorrent
+RUN set -x \
  && git clone --shallow-submodules --recurse-submodules https://github.com/qbittorrent/qBittorrent.git /tmp/qbittorrent \
  && cd /tmp/qbittorrent \
  && git checkout "$(git tag -l --sort=-v:refname | head -n 1)" \
  && cmake -Wno-dev -G Ninja -B build \
         -D CMAKE_BUILD_TYPE="release" \
-        -D GUI=off \
-        -D CMAKE_CXX_STANDARD=17 \
+        -D GUI=OFF \
+        -D CMAKE_CXX_STANDARD=20 \
         -D BOOST_INCLUDEDIR="$HOME/boost_1_86_0/" \
-        -D CMAKE_CXX_STANDARD_LIBRARIES="/usr/lib/libexecinfo.so" \
         -D CMAKE_INSTALL_PREFIX="/usr/local" \
  && cmake --build build \
- && cmake --install build \
+ && cmake --install build
+
     # Clean-up
+RUN set -x \
  && cd / \
  && apk del --purge .build-deps \
  && rm -rf /tmp/*
