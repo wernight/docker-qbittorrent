@@ -1,6 +1,5 @@
-# 3.16 is the last release with libexecinfo which is required by qbittorrent.
-# https://pkgs.alpinelinux.org/packages?name=libexecinfo&branch=v3.16
-FROM alpine:3.16
+# https://hub.docker.com/_/alpine
+FROM alpine:3.20
 
 # Install required packages
 RUN apk add --no-cache \
@@ -9,19 +8,19 @@ RUN apk add --no-cache \
         curl \
         dumb-init \
         icu \
-        libexecinfo \
         libtool \
         openssl \
         python3 \
-        qt5-qtbase \
-        qt5-qtsvg \
-        qt5-qttools \
+        qt6-qtbase \
+        qt6-qtsvg \
+        qt6-qttools \
         re2c \
         zlib
 
 # Compiling qBitTorrent following instructions on
-# https://github.com/qbittorrent/qBittorrent/wiki/Compilation:-Alpine-Linux
+# https://github.com/qbittorrent/qBittorrent/wiki/Compilation-Alpine-Linux
 RUN set -x \
+    #
     # Install build dependencies
  && apk add --no-cache -t .build-deps \
         autoconf \
@@ -30,8 +29,11 @@ RUN set -x \
         build-base \
         cmake \
         git \
+        jq \
         libtool \
         linux-headers \
+        ninja-build \
+        ninja-is-really-ninja \
         perl \
         pkgconf \
         python3 \
@@ -39,52 +41,48 @@ RUN set -x \
         re2c \
         tar \
         icu-dev \
-        libexecinfo-dev \
         openssl-dev \
-        qt5-qtbase-dev \
-        qt5-qttools-dev \
+        qt6-qtbase-dev \
+        qt6-qttools-dev \
         zlib-dev \
-        qt5-qtsvg-dev \
-    # Build Ninja.
- && git clone --shallow-submodules --recurse-submodules https://github.com/ninja-build/ninja.git /tmp/ninja \
- && cd /tmp/ninja \
- && git checkout "$(git tag -l --sort=-v:refname "v*" | head -n 1)" \
- && cmake -Wno-dev -B build \
-        -D CMAKE_CXX_STANDARD=17 \
-        -D CMAKE_INSTALL_PREFIX="/usr/local" \
- && cmake --build build \
- && cmake --install build \
-    # Boost build file.
- && curl -sNLk https://boostorg.jfrog.io/artifactory/main/release/1.76.0/source/boost_1_76_0.tar.gz -o "/tmp/boost_1_76_0.tar.gz" \
- && tar xf "/tmp/boost_1_76_0.tar.gz" -C /tmp \
+        qt6-qtsvg-dev \
+        xz \
+    #
+    # Boost
+    # https://github.com/boostorg/boost/releases
+ && mkdir -p ~/boost-dev \
+ && curl -L https://github.com/boostorg/boost/releases/download/boost-1.86.0/boost-1.86.0-b2-nodocs.tar.xz | tar xJf - --strip-components=1 -C ~/boost-dev \
+    #
     # Libtorrent
  && git clone --shallow-submodules --recurse-submodules https://github.com/arvidn/libtorrent.git /tmp/libtorrent \
  && cd /tmp/libtorrent \
- && git checkout "$(git tag -l --sort=-v:refname "v2*" | head -n 1)" \
+ && git checkout "$(git tag -l --sort=-v:refname | awk '/v2/' | head -1)" \
  && cmake -Wno-dev -G Ninja -B build \
         -D CMAKE_BUILD_TYPE="Release" \
-        -D CMAKE_CXX_STANDARD=17 \
-        -D BOOST_INCLUDEDIR="$HOME/boost_1_76_0/" \
+        -D CMAKE_CXX_STANDARD=20 \
+        -D BOOST_INCLUDEDIR="$HOME/boost-dev/" \
         -D CMAKE_INSTALL_LIBDIR="lib" \
         -D CMAKE_INSTALL_PREFIX="/usr/local" \
  && cmake --build build \
  && cmake --install build \
+    #
     # Build qBittorrent
  && git clone --shallow-submodules --recurse-submodules https://github.com/qbittorrent/qBittorrent.git /tmp/qbittorrent \
  && cd /tmp/qbittorrent \
- && git checkout "$(git tag -l --sort=-v:refname | head -n 1)" \
+ && git checkout "$(git tag -l --sort=-v:refname | awk '!/[0-9][a-zA-Z]/' | head -1)" \
  && cmake -Wno-dev -G Ninja -B build \
         -D CMAKE_BUILD_TYPE="release" \
-        -D GUI=off \
-        -D CMAKE_CXX_STANDARD=17 \
-        -D BOOST_INCLUDEDIR="$HOME/boost_1_76_0/" \
-        -D CMAKE_CXX_STANDARD_LIBRARIES="/usr/lib/libexecinfo.so" \
+        -D CMAKE_CXX_STANDARD=20 \
+        -D BOOST_INCLUDEDIR="$HOME/boost-dev/" \
         -D CMAKE_INSTALL_PREFIX="/usr/local" \
+        -D GUI=OFF \
  && cmake --build build \
  && cmake --install build \
+    #
     # Clean-up
  && cd / \
  && apk del --purge .build-deps \
+ && rm -rf ~/boost-dev/ \
  && rm -rf /tmp/*
 
 RUN set -x \
